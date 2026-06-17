@@ -36,7 +36,7 @@ values.AddBack(20);
 Generate project files:
 
 ```bash
-premake5 vs2022
+premake5 vs2026
 ```
 
 Open the generated solution in Visual Studio and build the library.
