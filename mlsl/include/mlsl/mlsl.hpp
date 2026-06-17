@@ -6,6 +6,7 @@
 
 #include <mlsl/Core/Delegate.hpp>
 #include <mlsl/Core/Error.hpp>
+#include <mlsl/Core/Function.hpp>
 #include <mlsl/Core/Macros.hpp>
 
 #include <mlsl/Allocators/Allocator.hpp>
