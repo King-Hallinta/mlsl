@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mlsl/Allocators/LinearArena.hpp>
+#include <mlsl/Memory/Alignment.hpp>
 
 #include <cstdint>
 
@@ -40,7 +41,7 @@ namespace mlsl
 	std::expected<void *MLSL_RESTRICT, Error> LinearArena::Allocate(std::size_t size, std::size_t alignment)
 	{
 		auto current = reinterpret_cast<std::uintptr_t>(m_Buffer) + m_Offset;
-		auto aligned = (current + alignment - 1) & ~(alignment - 1);
+		auto aligned = AlignAddress(current, alignment);
 		auto offset = aligned - reinterpret_cast<std::uintptr_t>(m_Buffer);
 
 		if (offset + size > m_Size)

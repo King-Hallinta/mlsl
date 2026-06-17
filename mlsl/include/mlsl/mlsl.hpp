@@ -40,6 +40,7 @@
 #include <mlsl/Containers/RingBuffer.hpp>
 #include <mlsl/Containers/Stack.hpp>
 
+#include <mlsl/Memory/Alignment.hpp>
 #include <mlsl/Memory/IntrusivePtr.hpp>
 #include <mlsl/Memory/ObjectPool.hpp>
 #include <mlsl/Memory/SharedPtr.hpp>

@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include <mlsl/Allocators/FreeListAllocator.hpp>
+#include <mlsl/Memory/Alignment.hpp>
 
 #include <cstdint>
 
@@ -56,7 +57,7 @@ namespace mlsl
 		{
 			auto currAddr = reinterpret_cast<std::uintptr_t>(curr);
 			auto dataAddr = currAddr + sizeof(Header);
-			auto aligned = (dataAddr + alignment - 1) & ~(alignment - 1);
+			auto aligned = AlignAddress(dataAddr, alignment);
 			auto adjustment = aligned - currAddr;
 			auto requiredSize = size + adjustment;
 
