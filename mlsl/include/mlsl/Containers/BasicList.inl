@@ -233,11 +233,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicList<T, Derived>::AddFront(const T &value)
+	std::expected<void, Error> BasicList<T, Derived>::Insert(const T &value)
 	{
 		auto result = AsDerived().AllocateNode();
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -263,11 +263,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicList<T, Derived>::AddFront(T &&value)
+	std::expected<void, Error> BasicList<T, Derived>::Insert(T &&value)
 	{
 		auto result = AsDerived().AllocateNode();
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -293,11 +293,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicList<T, Derived>::AddBack(const T &value)
+	std::expected<void, Error> BasicList<T, Derived>::Append(const T &value)
 	{
 		auto result = AsDerived().AllocateNode();
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -323,11 +323,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicList<T, Derived>::AddBack(T &&value)
+	std::expected<void, Error> BasicList<T, Derived>::Append(T &&value)
 	{
 		auto result = AsDerived().AllocateNode();
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -407,9 +407,9 @@ namespace mlsl
 	{
 		if (pos.m_Node == nullptr)
 		{
-			auto result = AddBack(value);
+			auto result = Append(value);
 
-			if (!result)
+			if (not result)
 			{
 				return std::unexpected(result.error());
 			}
@@ -419,9 +419,9 @@ namespace mlsl
 
 		if (pos.m_Node == m_Head)
 		{
-			auto result = AddFront(value);
+			auto result = Insert(value);
 
-			if (!result)
+			if (not result)
 			{
 				return std::unexpected(result.error());
 			}
@@ -431,7 +431,7 @@ namespace mlsl
 
 		auto result = AsDerived().AllocateNode();
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -450,9 +450,9 @@ namespace mlsl
 	{
 		if (pos.m_Node == nullptr)
 		{
-			auto result = AddBack(std::move(value));
+			auto result = Append(std::move(value));
 
-			if (!result)
+			if (not result)
 			{
 				return std::unexpected(result.error());
 			}
@@ -462,9 +462,9 @@ namespace mlsl
 
 		if (pos.m_Node == m_Head)
 		{
-			auto result = AddFront(std::move(value));
+			auto result = Insert(std::move(value));
 
-			if (!result)
+			if (not result)
 			{
 				return std::unexpected(result.error());
 			}
@@ -474,7 +474,7 @@ namespace mlsl
 
 		auto result = AsDerived().AllocateNode();
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}

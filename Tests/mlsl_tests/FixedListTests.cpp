@@ -10,9 +10,9 @@ TEST_CASE("FixedList supports front back get and iteration")
 {
 	mlsl::FixedList<int, 4> list;
 
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddFront(1));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Insert(1));
+	REQUIRE(list.Append(3));
 
 	auto item = list.Get(1);
 	auto missing = list.Get(3);
@@ -38,8 +38,8 @@ TEST_CASE("FixedList supports insert erase and capacity limits")
 {
 	mlsl::FixedList<int, 3> list;
 
-	REQUIRE(list.AddBack(1));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(1));
+	REQUIRE(list.Append(3));
 
 	auto inserted = list.Insert(list.End(), 4);
 
@@ -72,16 +72,16 @@ TEST_CASE("FixedList clear resets storage for later reuse")
 {
 	mlsl::FixedList<int, 3> list;
 
-	REQUIRE(list.AddBack(1));
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(1));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Append(3));
 
 	list.Clear();
 
 	REQUIRE(list.Empty());
 
-	REQUIRE(list.AddFront(7));
-	REQUIRE(list.AddBack(8));
+	REQUIRE(list.Insert(7));
+	REQUIRE(list.Append(8));
 	REQUIRE(list.Size() == 2);
 	REQUIRE(list.Front() == 7);
 	REQUIRE(list.Back() == 8);
@@ -92,9 +92,9 @@ TEST_CASE("FixedList copy assignment preserves values independently")
 	mlsl::FixedList<int, 4> left;
 	mlsl::FixedList<int, 4> right;
 
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
-	REQUIRE(right.AddBack(4));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
+	REQUIRE(right.Append(4));
 
 	left = right;
 
@@ -112,10 +112,10 @@ TEST_CASE("FixedList erase of middle element preserves neighbors")
 {
 	mlsl::FixedList<int, 4> list;
 
-	REQUIRE(list.AddBack(1));
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddBack(3));
-	REQUIRE(list.AddBack(4));
+	REQUIRE(list.Append(1));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Append(3));
+	REQUIRE(list.Append(4));
 
 	auto iterator = list.Begin();
 	++iterator;
@@ -138,8 +138,8 @@ TEST_CASE("FixedList insert at begin reuses freed nodes")
 {
 	mlsl::FixedList<int, 3> list;
 
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Append(3));
 	list.RemoveFront();
 
 	auto inserted = list.Insert(list.Begin(), 1);

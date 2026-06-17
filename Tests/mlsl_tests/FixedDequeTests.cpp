@@ -12,9 +12,9 @@ TEST_CASE("FixedDeque supports front back and indexed access")
 {
 	mlsl::FixedDeque<int, 4> deque;
 
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddFront(1));
-	REQUIRE(deque.AddBack(3));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Insert(1));
+	REQUIRE(deque.Append(3));
 
 	auto middle = deque.Get(1);
 	auto missing = deque.Get(3);
@@ -34,10 +34,10 @@ TEST_CASE("FixedDeque reports out of memory when full")
 {
 	mlsl::FixedDeque<int, 2> deque;
 
-	REQUIRE(deque.AddBack(4));
-	REQUIRE(deque.AddFront(3));
+	REQUIRE(deque.Append(4));
+	REQUIRE(deque.Insert(3));
 
-	auto overflow = deque.AddBack(5);
+	auto overflow = deque.Append(5);
 
 	REQUIRE(not overflow);
 	REQUIRE(overflow.error().type == mlsl::ErrorType::OutOfMemory);
@@ -55,17 +55,17 @@ TEST_CASE("FixedDeque clear resets state for subsequent front and back insertion
 {
 	mlsl::FixedDeque<int, 3> deque;
 
-	REQUIRE(deque.AddBack(1));
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddFront(0));
+	REQUIRE(deque.Append(1));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Insert(0));
 
 	deque.RemoveFront();
 	deque.Clear();
 
 	REQUIRE(deque.Empty());
 
-	REQUIRE(deque.AddFront(9));
-	REQUIRE(deque.AddBack(10));
+	REQUIRE(deque.Insert(9));
+	REQUIRE(deque.Append(10));
 	REQUIRE(deque.Size() == 2);
 	REQUIRE(deque.Front() == 9);
 	REQUIRE(deque.Back() == 10);
@@ -76,11 +76,11 @@ TEST_CASE("FixedDeque copy assignment preserves wrapped ordering")
 	mlsl::FixedDeque<int, 4> left;
 	mlsl::FixedDeque<int, 4> right;
 
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
-	REQUIRE(right.AddFront(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
+	REQUIRE(right.Insert(1));
 	right.RemoveFront();
-	REQUIRE(right.AddBack(4));
+	REQUIRE(right.Append(4));
 
 	left = right;
 
@@ -95,11 +95,11 @@ TEST_CASE("FixedDeque move assignment transfers wrapped contents")
 	mlsl::FixedDeque<int, 4> left;
 	mlsl::FixedDeque<int, 4> right;
 
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
-	REQUIRE(right.AddFront(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
+	REQUIRE(right.Insert(1));
 	right.RemoveFront();
-	REQUIRE(right.AddBack(4));
+	REQUIRE(right.Append(4));
 
 	left = std::move(right);
 
@@ -114,9 +114,9 @@ TEST_CASE("FixedDeque move construction preserves order")
 {
 	mlsl::FixedDeque<int, 3> source;
 
-	REQUIRE(source.AddBack(5));
-	REQUIRE(source.AddBack(6));
-	REQUIRE(source.AddFront(4));
+	REQUIRE(source.Append(5));
+	REQUIRE(source.Append(6));
+	REQUIRE(source.Insert(4));
 
 	mlsl::FixedDeque<int, 3> moved(std::move(source));
 

@@ -40,7 +40,7 @@ namespace mlsl
 	{
 		for (auto it = other.Begin(); it != other.End(); ++it)
 		{
-			static_cast<void>(this->AddBack(*it));
+			static_cast<void>(this->Append(*it));
 		}
 	}
 
@@ -50,7 +50,7 @@ namespace mlsl
 	{
 		for (auto it = other.Begin(); it != other.End(); ++it)
 		{
-			static_cast<void>(this->AddBack(std::move(*it)));
+			static_cast<void>(this->Append(std::move(*it)));
 		}
 
 		other.Clear();
@@ -76,7 +76,7 @@ namespace mlsl
 
 			for (auto it = other.Begin(); it != other.End(); ++it)
 			{
-				static_cast<void>(this->AddBack(*it));
+				static_cast<void>(this->Append(*it));
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace mlsl
 
 			for (auto it = other.Begin(); it != other.End(); ++it)
 			{
-				static_cast<void>(this->AddBack(std::move(*it)));
+				static_cast<void>(this->Append(std::move(*it)));
 			}
 
 			other.Clear();

@@ -43,7 +43,7 @@ TEST_CASE("String mutates through assign append add remove resize and clear")
 
 	REQUIRE(string.Assign("ab"));
 	REQUIRE(string.Append("cd"));
-	REQUIRE(string.Add('e'));
+	REQUIRE(string.Append('e'));
 	REQUIRE(string.Size() == 5);
 	REQUIRE(string.Equals(mlsl::StringView("abcde")));
 

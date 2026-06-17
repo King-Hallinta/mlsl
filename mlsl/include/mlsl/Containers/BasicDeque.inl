@@ -80,11 +80,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicDeque<T, Derived>::AddFront(const T &value)
+	std::expected<void, Error> BasicDeque<T, Derived>::Insert(const T &value)
 	{
 		auto result = AsDerived().EnsureCapacity(m_Size + 1);
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -98,11 +98,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicDeque<T, Derived>::AddFront(T &&value)
+	std::expected<void, Error> BasicDeque<T, Derived>::Insert(T &&value)
 	{
 		auto result = AsDerived().EnsureCapacity(m_Size + 1);
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -116,11 +116,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicDeque<T, Derived>::AddBack(const T &value)
+	std::expected<void, Error> BasicDeque<T, Derived>::Append(const T &value)
 	{
 		auto result = AsDerived().EnsureCapacity(m_Size + 1);
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}
@@ -133,11 +133,11 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
-	std::expected<void, Error> BasicDeque<T, Derived>::AddBack(T &&value)
+	std::expected<void, Error> BasicDeque<T, Derived>::Append(T &&value)
 	{
 		auto result = AsDerived().EnsureCapacity(m_Size + 1);
 
-		if (!result)
+		if (not result)
 		{
 			return std::unexpected(result.error());
 		}

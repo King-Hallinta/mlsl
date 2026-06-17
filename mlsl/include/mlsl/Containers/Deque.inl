@@ -26,7 +26,7 @@ namespace mlsl
 	{
 		for (SizeType i = 0; i < other.m_Size; ++i)
 		{
-			static_cast<void>(this->AddBack(other[i]));
+			static_cast<void>(this->Append(other[i]));
 		}
 	}
 
@@ -70,7 +70,7 @@ namespace mlsl
 
 			for (SizeType i = 0; i < other.m_Size; ++i)
 			{
-				static_cast<void>(this->AddBack(other[i]));
+				static_cast<void>(this->Append(other[i]));
 			}
 		}
 

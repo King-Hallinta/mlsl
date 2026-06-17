@@ -35,10 +35,10 @@ namespace mlsl
 		[[nodiscard]] SizeType Size() const;
 		[[nodiscard]] bool Empty() const;
 
-		std::expected<void, Error> AddFront(const T &value);
-		std::expected<void, Error> AddFront(T &&value);
-		std::expected<void, Error> AddBack(const T &value);
-		std::expected<void, Error> AddBack(T &&value);
+		std::expected<void, Error> Insert(const T &value);
+		std::expected<void, Error> Insert(T &&value);
+		std::expected<void, Error> Append(const T &value);
+		std::expected<void, Error> Append(T &&value);
 		void RemoveFront();
 		void RemoveBack();
 		void Clear();

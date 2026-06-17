@@ -15,9 +15,9 @@ TEST_CASE("InlineDeque grows beyond inline capacity and preserves order")
 	REQUIRE(deque.Capacity() == 2);
 	REQUIRE(deque.InlineCapacity() == 2);
 
-	REQUIRE(deque.AddBack(1));
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddBack(3));
+	REQUIRE(deque.Append(1));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Append(3));
 
 	REQUIRE(deque.Size() == 3);
 	REQUIRE(deque.Capacity() >= 3);
@@ -32,12 +32,12 @@ TEST_CASE("InlineDeque supports wraparound after front removal")
 {
 	mlsl::InlineDeque<int, 2> deque;
 
-	REQUIRE(deque.AddBack(5));
-	REQUIRE(deque.AddBack(6));
+	REQUIRE(deque.Append(5));
+	REQUIRE(deque.Append(6));
 
 	deque.RemoveFront();
 
-	REQUIRE(deque.AddBack(7));
+	REQUIRE(deque.Append(7));
 	REQUIRE(deque.Size() == 2);
 	REQUIRE(deque.Front() == 6);
 	REQUIRE(deque.Back() == 7);
@@ -56,9 +56,9 @@ TEST_CASE("InlineDeque move assignment transfers grown contents")
 	mlsl::InlineDeque<int, 1> left;
 	mlsl::InlineDeque<int, 1> right;
 
-	REQUIRE(right.AddBack(1));
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
+	REQUIRE(right.Append(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
 
 	left = std::move(right);
 
@@ -73,12 +73,12 @@ TEST_CASE("InlineDeque assignment replaces existing wrapped contents")
 	mlsl::InlineDeque<int, 2> left;
 	mlsl::InlineDeque<int, 2> right;
 
-	REQUIRE(left.AddBack(9));
-	REQUIRE(left.AddBack(8));
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
+	REQUIRE(left.Append(9));
+	REQUIRE(left.Append(8));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
 	right.RemoveFront();
-	REQUIRE(right.AddBack(4));
+	REQUIRE(right.Append(4));
 
 	left = right;
 
@@ -92,9 +92,9 @@ TEST_CASE("InlineDeque copy assignment preserves grown contents independently")
 	mlsl::InlineDeque<int, 1> left;
 	mlsl::InlineDeque<int, 1> right;
 
-	REQUIRE(right.AddBack(1));
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
+	REQUIRE(right.Append(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
 
 	left = right;
 
@@ -112,10 +112,10 @@ TEST_CASE("InlineDeque move construction transfers wrapped contents")
 {
 	mlsl::InlineDeque<int, 2> source;
 
-	REQUIRE(source.AddBack(4));
-	REQUIRE(source.AddBack(5));
+	REQUIRE(source.Append(4));
+	REQUIRE(source.Append(5));
 	source.RemoveFront();
-	REQUIRE(source.AddBack(6));
+	REQUIRE(source.Append(6));
 
 	mlsl::InlineDeque<int, 2> moved(std::move(source));
 
@@ -129,11 +129,11 @@ TEST_CASE("InlineDeque growth preserves wrapped values")
 {
 	mlsl::InlineDeque<int, 2> deque;
 
-	REQUIRE(deque.AddBack(1));
-	REQUIRE(deque.AddBack(2));
+	REQUIRE(deque.Append(1));
+	REQUIRE(deque.Append(2));
 	deque.RemoveFront();
-	REQUIRE(deque.AddBack(3));
-	REQUIRE(deque.AddBack(4));
+	REQUIRE(deque.Append(3));
+	REQUIRE(deque.Append(4));
 
 	REQUIRE(deque.Capacity() > deque.InlineCapacity());
 	REQUIRE(deque.Size() == 3);
@@ -148,14 +148,14 @@ TEST_CASE("InlineDeque clear resets head for subsequent front insertions")
 {
 	mlsl::InlineDeque<int, 3> deque;
 
-	REQUIRE(deque.AddBack(4));
-	REQUIRE(deque.AddBack(5));
+	REQUIRE(deque.Append(4));
+	REQUIRE(deque.Append(5));
 	deque.RemoveFront();
 	deque.Clear();
 
 	REQUIRE(deque.Empty());
-	REQUIRE(deque.AddFront(9));
-	REQUIRE(deque.AddBack(10));
+	REQUIRE(deque.Insert(9));
+	REQUIRE(deque.Append(10));
 	REQUIRE(deque.Size() == 2);
 	REQUIRE(deque.Front() == 9);
 	REQUIRE(deque.Back() == 10);

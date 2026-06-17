@@ -52,7 +52,7 @@ TEST_CASE("FixedString supports access substr and mutation")
 	mlsl::FixedString<8> string;
 
 	REQUIRE(string.Assign("abc"));
-	REQUIRE(string.Add('d'));
+	REQUIRE(string.Append('d'));
 
 	auto item = string.Get(2);
 	auto subview = string.Substr(1, 2);

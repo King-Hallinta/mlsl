@@ -64,9 +64,9 @@ TEST_CASE("BasicList provides insert erase and iteration semantics")
 {
 	ListHarness<int, 4> list;
 
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddFront(1));
-	REQUIRE(list.AddBack(4));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Insert(1));
+	REQUIRE(list.Append(4));
 
 	auto inserted = list.Insert(list.End(), 5);
 
@@ -93,10 +93,10 @@ TEST_CASE("BasicList reports out of memory through derived node allocator")
 {
 	ListHarness<int, 2> list;
 
-	REQUIRE(list.AddBack(7));
-	REQUIRE(list.AddBack(8));
+	REQUIRE(list.Append(7));
+	REQUIRE(list.Append(8));
 
-	auto overflow = list.AddFront(6);
+	auto overflow = list.Insert(6);
 
 	REQUIRE(not overflow);
 	REQUIRE(overflow.error().type == mlsl::ErrorType::OutOfMemory);

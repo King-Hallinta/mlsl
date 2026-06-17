@@ -71,13 +71,13 @@ namespace mlsl
 	template <typename T, typename Derived>
 	std::expected<void, Error> BasicRingBuffer<T, Derived>::Add(const T &value)
 	{
-		return Base::AddBack(value);
+		return Base::Append(value);
 	}
 
 	template <typename T, typename Derived>
 	std::expected<void, Error> BasicRingBuffer<T, Derived>::Add(T &&value)
 	{
-		return Base::AddBack(std::move(value));
+		return Base::Append(std::move(value));
 	}
 
 	template <typename T, typename Derived>

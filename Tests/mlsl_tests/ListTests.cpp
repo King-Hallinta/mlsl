@@ -8,13 +8,13 @@
 
 #include <utility>
 
-TEST_CASE("List supports add insert erase and indexed access")
+TEST_CASE("List supports append insert erase and indexed access")
 {
 	mlsl::List<int> list;
 
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddFront(1));
-	REQUIRE(list.AddBack(4));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Insert(1));
+	REQUIRE(list.Append(4));
 
 	auto inserted = list.Insert(list.End(), 5);
 
@@ -43,9 +43,9 @@ TEST_CASE("List copy and move preserve element order")
 {
 	mlsl::List<int> list;
 
-	REQUIRE(list.AddBack(7));
-	REQUIRE(list.AddBack(8));
-	REQUIRE(list.AddBack(9));
+	REQUIRE(list.Append(7));
+	REQUIRE(list.Append(8));
+	REQUIRE(list.Append(9));
 
 	mlsl::List<int> copy(list);
 
@@ -65,16 +65,16 @@ TEST_CASE("List clear resets state for subsequent insertions")
 {
 	mlsl::List<int> list;
 
-	REQUIRE(list.AddBack(1));
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(1));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Append(3));
 
 	list.Clear();
 
 	REQUIRE(list.Empty());
 
-	REQUIRE(list.AddFront(7));
-	REQUIRE(list.AddBack(8));
+	REQUIRE(list.Insert(7));
+	REQUIRE(list.Append(8));
 	REQUIRE(list.Size() == 2);
 	REQUIRE(list.Front() == 7);
 	REQUIRE(list.Back() == 8);
@@ -84,8 +84,8 @@ TEST_CASE("List insert at begin and erase tail preserve links")
 {
 	mlsl::List<int> list;
 
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Append(3));
 
 	auto inserted = list.Insert(list.Begin(), 1);
 
@@ -109,9 +109,9 @@ TEST_CASE("List erase of first element advances to new head")
 {
 	mlsl::List<int> list;
 
-	REQUIRE(list.AddBack(1));
-	REQUIRE(list.AddBack(2));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(1));
+	REQUIRE(list.Append(2));
+	REQUIRE(list.Append(3));
 
 	auto next = list.Erase(list.Begin());
 
@@ -125,8 +125,8 @@ TEST_CASE("List erase end iterator leaves container unchanged")
 {
 	mlsl::List<int> list;
 
-	REQUIRE(list.AddBack(4));
-	REQUIRE(list.AddBack(5));
+	REQUIRE(list.Append(4));
+	REQUIRE(list.Append(5));
 
 	auto next = list.Erase(list.End());
 

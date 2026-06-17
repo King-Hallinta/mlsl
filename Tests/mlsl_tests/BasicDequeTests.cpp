@@ -50,9 +50,9 @@ TEST_CASE("BasicDeque provides double ended access semantics")
 {
 	DequeHarness<int, 3> deque;
 
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddFront(1));
-	REQUIRE(deque.AddBack(3));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Insert(1));
+	REQUIRE(deque.Append(3));
 
 	auto middle = deque.Get(1);
 
@@ -68,10 +68,10 @@ TEST_CASE("BasicDeque reports out of memory through derived capacity")
 {
 	DequeHarness<int, 2> deque;
 
-	REQUIRE(deque.AddBack(4));
-	REQUIRE(deque.AddBack(5));
+	REQUIRE(deque.Append(4));
+	REQUIRE(deque.Append(5));
 
-	auto overflow = deque.AddFront(3);
+	auto overflow = deque.Insert(3);
 
 	REQUIRE(not overflow);
 	REQUIRE(overflow.error().type == mlsl::ErrorType::OutOfMemory);

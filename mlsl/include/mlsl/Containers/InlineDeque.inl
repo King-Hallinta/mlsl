@@ -26,7 +26,7 @@ namespace mlsl
 	{
 		for (SizeType i = 0; i < other.m_Size; ++i)
 		{
-			static_cast<void>(this->AddBack(other[i]));
+			static_cast<void>(this->Append(other[i]));
 		}
 	}
 
@@ -36,7 +36,7 @@ namespace mlsl
 	{
 		for (SizeType i = 0; i < other.m_Size; ++i)
 		{
-			static_cast<void>(this->AddBack(std::move(other[i])));
+			static_cast<void>(this->Append(std::move(other[i])));
 		}
 
 		other.Clear();
@@ -67,7 +67,7 @@ namespace mlsl
 
 			for (SizeType i = 0; i < other.m_Size; ++i)
 			{
-				static_cast<void>(this->AddBack(other[i]));
+				static_cast<void>(this->Append(other[i]));
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace mlsl
 
 			for (SizeType i = 0; i < other.m_Size; ++i)
 			{
-				static_cast<void>(this->AddBack(std::move(other[i])));
+				static_cast<void>(this->Append(std::move(other[i])));
 			}
 
 			other.Clear();

@@ -56,7 +56,7 @@ TEST_CASE("InlineString supports copy move assign resize and substr")
 {
 	mlsl::InlineString<2> string("ab");
 
-	REQUIRE(string.Add('c'));
+	REQUIRE(string.Append('c'));
 	REQUIRE(string.Resize(5, 'x'));
 
 	mlsl::InlineString<2> copy(string);

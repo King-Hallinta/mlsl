@@ -217,7 +217,7 @@ namespace mlsl
 	}
 
 	template <typename CharT, std::size_t N>
-	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Add(CharT value)
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Append(CharT value)
 	{
 		if (m_Size + 1 > N)
 		{

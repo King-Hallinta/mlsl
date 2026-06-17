@@ -13,8 +13,8 @@ TEST_CASE("InlineList supports inline storage operations")
 	mlsl::InlineList<int, 2> list;
 
 	REQUIRE(list.InlineCapacity() == 2);
-	REQUIRE(list.AddBack(1));
-	REQUIRE(list.AddBack(3));
+	REQUIRE(list.Append(1));
+	REQUIRE(list.Append(3));
 
 	auto inserted = list.Insert(list.Begin(), 0);
 
@@ -33,9 +33,9 @@ TEST_CASE("InlineList supports erase clear and growth beyond inline capacity")
 {
 	mlsl::InlineList<int, 1> list;
 
-	REQUIRE(list.AddBack(4));
-	REQUIRE(list.AddBack(5));
-	REQUIRE(list.AddFront(3));
+	REQUIRE(list.Append(4));
+	REQUIRE(list.Append(5));
+	REQUIRE(list.Insert(3));
 
 	REQUIRE(list.Size() == 3);
 	REQUIRE(list.Front() == 3);
@@ -59,9 +59,9 @@ TEST_CASE("InlineList move assignment transfers overflow contents")
 	mlsl::InlineList<int, 1> left;
 	mlsl::InlineList<int, 1> right;
 
-	REQUIRE(right.AddBack(1));
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
+	REQUIRE(right.Append(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
 
 	left = std::move(right);
 
@@ -76,13 +76,13 @@ TEST_CASE("InlineList assignment replaces existing contents after clear")
 	mlsl::InlineList<int, 2> left;
 	mlsl::InlineList<int, 2> right;
 
-	REQUIRE(left.AddBack(9));
-	REQUIRE(left.AddBack(8));
+	REQUIRE(left.Append(9));
+	REQUIRE(left.Append(8));
 	left.Clear();
 
-	REQUIRE(right.AddBack(4));
-	REQUIRE(right.AddBack(5));
-	REQUIRE(right.AddBack(6));
+	REQUIRE(right.Append(4));
+	REQUIRE(right.Append(5));
+	REQUIRE(right.Append(6));
 
 	left = right;
 
@@ -96,10 +96,10 @@ TEST_CASE("InlineList copy assignment preserves order beyond inline capacity")
 	mlsl::InlineList<int, 1> left;
 	mlsl::InlineList<int, 1> right;
 
-	REQUIRE(left.AddBack(9));
-	REQUIRE(right.AddBack(1));
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
+	REQUIRE(left.Append(9));
+	REQUIRE(right.Append(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
 
 	left = right;
 
@@ -117,9 +117,9 @@ TEST_CASE("InlineList remove operations preserve remaining elements")
 {
 	mlsl::InlineList<int, 2> list;
 
-	REQUIRE(list.AddBack(4));
-	REQUIRE(list.AddBack(5));
-	REQUIRE(list.AddBack(6));
+	REQUIRE(list.Append(4));
+	REQUIRE(list.Append(5));
+	REQUIRE(list.Append(6));
 
 	list.RemoveFront();
 

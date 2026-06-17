@@ -309,7 +309,7 @@ namespace mlsl
 	}
 
 	template <typename CharT, std::size_t N>
-	std::expected<void, Error> BasicInlineString<CharT, N>::Add(CharT value)
+	std::expected<void, Error> BasicInlineString<CharT, N>::Append(CharT value)
 	{
 		auto result = Reserve(m_Size + 1);
 

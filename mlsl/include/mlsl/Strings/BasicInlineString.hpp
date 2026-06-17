@@ -78,7 +78,7 @@ namespace mlsl
 		std::expected<void, Error> Assign(ViewType view);
 		std::expected<void, Error> Append(ConstPointer data);
 		std::expected<void, Error> Append(ViewType view);
-		std::expected<void, Error> Add(CharT value);
+		std::expected<void, Error> Append(CharT value);
 		void Remove();
 		std::expected<void, Error> Resize(SizeType size, CharT value = CharT {});
 

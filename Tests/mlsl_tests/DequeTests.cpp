@@ -16,10 +16,10 @@ TEST_CASE("Deque grows and preserves front back and index order")
 	REQUIRE(deque.Reserve(4));
 	REQUIRE(deque.Capacity() >= 4);
 
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddFront(1));
-	REQUIRE(deque.AddBack(3));
-	REQUIRE(deque.AddBack(4));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Insert(1));
+	REQUIRE(deque.Append(3));
+	REQUIRE(deque.Append(4));
 
 	auto item = deque.Get(2);
 
@@ -35,12 +35,12 @@ TEST_CASE("Deque supports wraparound copy and move")
 {
 	mlsl::Deque<int> deque;
 
-	REQUIRE(deque.AddBack(5));
-	REQUIRE(deque.AddBack(6));
-	REQUIRE(deque.AddBack(7));
+	REQUIRE(deque.Append(5));
+	REQUIRE(deque.Append(6));
+	REQUIRE(deque.Append(7));
 
 	deque.RemoveFront();
-	REQUIRE(deque.AddBack(8));
+	REQUIRE(deque.Append(8));
 
 	mlsl::Deque<int> copy(deque);
 
@@ -60,17 +60,17 @@ TEST_CASE("Deque clear resets state for subsequent front and back insertion")
 {
 	mlsl::Deque<int> deque;
 
-	REQUIRE(deque.AddBack(1));
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddFront(0));
+	REQUIRE(deque.Append(1));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Insert(0));
 
 	deque.RemoveFront();
 	deque.Clear();
 
 	REQUIRE(deque.Empty());
 
-	REQUIRE(deque.AddFront(9));
-	REQUIRE(deque.AddBack(10));
+	REQUIRE(deque.Insert(9));
+	REQUIRE(deque.Append(10));
 	REQUIRE(deque.Size() == 2);
 	REQUIRE(deque.Front() == 9);
 	REQUIRE(deque.Back() == 10);
@@ -81,9 +81,9 @@ TEST_CASE("Deque move assignment transfers contents")
 	mlsl::Deque<int> left;
 	mlsl::Deque<int> right;
 
-	REQUIRE(right.AddBack(3));
-	REQUIRE(right.AddBack(4));
-	REQUIRE(right.AddBack(5));
+	REQUIRE(right.Append(3));
+	REQUIRE(right.Append(4));
+	REQUIRE(right.Append(5));
 
 	left = std::move(right);
 
@@ -101,9 +101,9 @@ TEST_CASE("Deque reserve does not shrink or disturb existing contents")
 	auto initialCapacity = deque.Capacity();
 
 	REQUIRE(initialCapacity >= 6);
-	REQUIRE(deque.AddBack(1));
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddFront(0));
+	REQUIRE(deque.Append(1));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Insert(0));
 	REQUIRE(deque.Reserve(3));
 
 	REQUIRE(deque.Capacity() == initialCapacity);
@@ -118,14 +118,14 @@ TEST_CASE("Deque assignment replaces prior wrapped contents")
 	mlsl::Deque<int> left;
 	mlsl::Deque<int> right;
 
-	REQUIRE(left.AddBack(10));
-	REQUIRE(left.AddBack(11));
-	REQUIRE(right.AddBack(1));
-	REQUIRE(right.AddBack(2));
-	REQUIRE(right.AddBack(3));
+	REQUIRE(left.Append(10));
+	REQUIRE(left.Append(11));
+	REQUIRE(right.Append(1));
+	REQUIRE(right.Append(2));
+	REQUIRE(right.Append(3));
 
 	right.RemoveFront();
-	REQUIRE(right.AddBack(4));
+	REQUIRE(right.Append(4));
 
 	left = right;
 
@@ -139,12 +139,12 @@ TEST_CASE("Deque wraparound preserves indexed order after mixed operations")
 {
 	mlsl::Deque<int> deque;
 
-	REQUIRE(deque.AddBack(1));
-	REQUIRE(deque.AddBack(2));
-	REQUIRE(deque.AddBack(3));
+	REQUIRE(deque.Append(1));
+	REQUIRE(deque.Append(2));
+	REQUIRE(deque.Append(3));
 	deque.RemoveFront();
-	REQUIRE(deque.AddFront(0));
-	REQUIRE(deque.AddBack(4));
+	REQUIRE(deque.Insert(0));
+	REQUIRE(deque.Append(4));
 
 	REQUIRE(deque.Size() == 4);
 	REQUIRE(deque.Front() == 0);
@@ -159,9 +159,9 @@ TEST_CASE("Deque remove back leaves remaining prefix intact")
 {
 	mlsl::Deque<int> deque;
 
-	REQUIRE(deque.AddBack(7));
-	REQUIRE(deque.AddBack(8));
-	REQUIRE(deque.AddBack(9));
+	REQUIRE(deque.Append(7));
+	REQUIRE(deque.Append(8));
+	REQUIRE(deque.Append(9));
 
 	deque.RemoveBack();
 
