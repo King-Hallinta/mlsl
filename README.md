@@ -29,7 +29,7 @@ values.AddBack(20);
 * C++23
 * Premake
 * MSVC
-* Catch2 (optionally, for tests)
+* Catch2 (optional, for tests)
 
 ## Building
 
