@@ -1,0 +1,10 @@
+// mlsl
+// SPDX-FileCopyrightText: 2026 Korrikada
+// SPDX-License-Identifier: Apache-2.0
+
+#include <catch2/catch_session.hpp>
+
+int main(int argc, char *argv[])
+{
+	return Catch::Session().run(argc, argv);
+}

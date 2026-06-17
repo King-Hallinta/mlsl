@@ -1,0 +1,14 @@
+/.vs/
+/Build/
+
+*.suo
+*.user
+*.rsuser
+*.VC.db
+*.VC.opendb
+*.opendb
+*.sln
+*.slnx
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user

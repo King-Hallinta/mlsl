@@ -1,0 +1,56 @@
+// mlsl
+// SPDX-FileCopyrightText: 2026 Korrikada
+// SPDX-License-Identifier: Apache-2.0
+
+#pragma once
+
+#include <cstddef>
+#include <expected>
+
+#include <mlsl/Containers/BasicDeque.hpp>
+
+namespace mlsl
+{
+	template <typename T, typename Derived>
+	class BasicRingBuffer : protected BasicDeque<T, Derived>
+	{
+	public:
+		using Base = BasicDeque<T, Derived>;
+		using ValueType = T;
+		using SizeType = std::size_t;
+		using Reference = T &;
+		using ConstReference = const T &;
+		using Pointer = T *;
+		using ConstPointer = const T *;
+
+	public:
+		[[nodiscard]] std::expected<Pointer, Error> Get(SizeType index);
+		[[nodiscard]] std::expected<ConstPointer, Error> Get(SizeType index) const;
+		[[nodiscard]] Reference operator[](SizeType index);
+		[[nodiscard]] ConstReference operator[](SizeType index) const;
+		[[nodiscard]] Reference Front();
+		[[nodiscard]] ConstReference Front() const;
+		[[nodiscard]] Reference Back();
+		[[nodiscard]] ConstReference Back() const;
+
+		[[nodiscard]] SizeType Size() const;
+		[[nodiscard]] bool Empty() const;
+
+		std::expected<void, Error> Add(const T &value);
+		std::expected<void, Error> Add(T &&value);
+		void Remove();
+		void Clear();
+
+	protected:
+		BasicRingBuffer() = default;
+		~BasicRingBuffer() = default;
+
+	protected:
+		[[nodiscard]] SizeType MapIndex(SizeType index) const;
+
+	private:
+		friend class BasicDeque<T, Derived>;
+	};
+} // namespace mlsl
+
+#include <mlsl/Containers/BasicRingBuffer.inl>
