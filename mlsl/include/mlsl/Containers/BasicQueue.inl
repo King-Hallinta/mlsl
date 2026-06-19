@@ -33,6 +33,30 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
+	typename BasicQueue<T, Derived>::Iterator BasicQueue<T, Derived>::Begin()
+	{
+		return Base::Begin();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicQueue<T, Derived>::ConstIterator BasicQueue<T, Derived>::Begin() const
+	{
+		return Base::Begin();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicQueue<T, Derived>::Iterator BasicQueue<T, Derived>::End()
+	{
+		return Base::End();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicQueue<T, Derived>::ConstIterator BasicQueue<T, Derived>::End() const
+	{
+		return Base::End();
+	}
+
+	template <typename T, typename Derived>
 	typename BasicQueue<T, Derived>::SizeType BasicQueue<T, Derived>::Size() const
 	{
 		return Base::Size();

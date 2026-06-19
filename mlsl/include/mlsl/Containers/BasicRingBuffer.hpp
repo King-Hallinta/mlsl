@@ -22,6 +22,8 @@ namespace mlsl
 		using ConstReference = const T &;
 		using Pointer = T *;
 		using ConstPointer = const T *;
+		using Iterator = typename Base::Iterator;
+		using ConstIterator = typename Base::ConstIterator;
 
 	public:
 		[[nodiscard]] std::expected<Pointer, Error> Get(SizeType index);
@@ -32,6 +34,11 @@ namespace mlsl
 		[[nodiscard]] ConstReference Front() const;
 		[[nodiscard]] Reference Back();
 		[[nodiscard]] ConstReference Back() const;
+
+		[[nodiscard]] Iterator Begin();
+		[[nodiscard]] ConstIterator Begin() const;
+		[[nodiscard]] Iterator End();
+		[[nodiscard]] ConstIterator End() const;
 
 		[[nodiscard]] SizeType Size() const;
 		[[nodiscard]] bool Empty() const;

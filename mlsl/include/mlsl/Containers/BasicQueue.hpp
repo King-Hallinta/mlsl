@@ -20,12 +20,19 @@ namespace mlsl
 		using SizeType = std::size_t;
 		using Reference = T &;
 		using ConstReference = const T &;
+		using Iterator = typename Base::Iterator;
+		using ConstIterator = typename Base::ConstIterator;
 
 	public:
 		[[nodiscard]] Reference Front();
 		[[nodiscard]] ConstReference Front() const;
 		[[nodiscard]] Reference Back();
 		[[nodiscard]] ConstReference Back() const;
+
+		[[nodiscard]] Iterator Begin();
+		[[nodiscard]] ConstIterator Begin() const;
+		[[nodiscard]] Iterator End();
+		[[nodiscard]] ConstIterator End() const;
 
 		[[nodiscard]] SizeType Size() const;
 		[[nodiscard]] bool Empty() const;

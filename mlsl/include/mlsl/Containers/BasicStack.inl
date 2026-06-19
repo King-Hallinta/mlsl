@@ -22,6 +22,30 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
+	typename BasicStack<T, Derived>::Iterator BasicStack<T, Derived>::Begin()
+	{
+		return AsDerived().GetStorage();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicStack<T, Derived>::ConstIterator BasicStack<T, Derived>::Begin() const
+	{
+		return AsDerived().GetStorage();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicStack<T, Derived>::Iterator BasicStack<T, Derived>::End()
+	{
+		return AsDerived().GetStorage() + m_Size;
+	}
+
+	template <typename T, typename Derived>
+	typename BasicStack<T, Derived>::ConstIterator BasicStack<T, Derived>::End() const
+	{
+		return AsDerived().GetStorage() + m_Size;
+	}
+
+	template <typename T, typename Derived>
 	typename BasicStack<T, Derived>::SizeType BasicStack<T, Derived>::Size() const
 	{
 		return m_Size;

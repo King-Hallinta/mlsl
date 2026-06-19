@@ -57,6 +57,30 @@ namespace mlsl
 	}
 
 	template <typename T, typename Derived>
+	typename BasicRingBuffer<T, Derived>::Iterator BasicRingBuffer<T, Derived>::Begin()
+	{
+		return Base::Begin();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicRingBuffer<T, Derived>::ConstIterator BasicRingBuffer<T, Derived>::Begin() const
+	{
+		return Base::Begin();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicRingBuffer<T, Derived>::Iterator BasicRingBuffer<T, Derived>::End()
+	{
+		return Base::End();
+	}
+
+	template <typename T, typename Derived>
+	typename BasicRingBuffer<T, Derived>::ConstIterator BasicRingBuffer<T, Derived>::End() const
+	{
+		return Base::End();
+	}
+
+	template <typename T, typename Derived>
 	typename BasicRingBuffer<T, Derived>::SizeType BasicRingBuffer<T, Derived>::Size() const
 	{
 		return Base::Size();

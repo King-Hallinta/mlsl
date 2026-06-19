@@ -19,10 +19,19 @@ namespace mlsl
 		using SizeType = std::size_t;
 		using Reference = T &;
 		using ConstReference = const T &;
+		using Pointer = T *;
+		using ConstPointer = const T *;
+		using Iterator = T *;
+		using ConstIterator = const T *;
 
 	public:
 		[[nodiscard]] Reference Top();
 		[[nodiscard]] ConstReference Top() const;
+
+		[[nodiscard]] Iterator Begin();
+		[[nodiscard]] ConstIterator Begin() const;
+		[[nodiscard]] Iterator End();
+		[[nodiscard]] ConstIterator End() const;
 
 		[[nodiscard]] SizeType Size() const;
 		[[nodiscard]] bool Empty() const;
