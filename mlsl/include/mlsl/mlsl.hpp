@@ -36,8 +36,10 @@
 #include <mlsl/Containers/InlineMap.hpp>
 #include <mlsl/Containers/InlineSet.hpp>
 #include <mlsl/Containers/List.hpp>
+#include <mlsl/Containers/Map.hpp>
 #include <mlsl/Containers/Queue.hpp>
 #include <mlsl/Containers/RingBuffer.hpp>
+#include <mlsl/Containers/Set.hpp>
 #include <mlsl/Containers/Stack.hpp>
 
 #include <mlsl/Memory/Alignment.hpp>

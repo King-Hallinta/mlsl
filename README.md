@@ -9,7 +9,7 @@ mlsl is a C++23 library providing memory-aware utilities, containers, ownership 
 * Smart pointers such as `UniquePtr`, `SharedPtr`, `WeakPtr`, `IntrusivePtr`
 * Utilities such as `Span`, `StaticBuffer`, `ObjectPool`
 * Allocator-aware strings
-* Containers including `Array`, `List`, `Deque`, `Queue`, `Stack`, `RingBuffer`, `HashMap`, and `HashSet`
+* Containers including `Array`, `List`, `Deque`, `Queue`, `Stack`, `RingBuffer`, `Map`, `Set`, `HashMap`, and `HashSet`
 * Fixed and inline container variants
 * No exceptions 🥹
 
