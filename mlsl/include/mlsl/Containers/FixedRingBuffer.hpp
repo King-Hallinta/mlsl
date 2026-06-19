@@ -34,7 +34,8 @@ namespace mlsl
 		[[nodiscard]] SizeType Capacity() const;
 
 	private:
-		alignas(T) std::byte m_Storage[sizeof(T) * N];
+		static constexpr SizeType StorageCount = N == 0 ? 1 : N;
+		alignas(T) std::byte m_Storage[sizeof(T) * StorageCount];
 
 	private:
 		friend Base;
