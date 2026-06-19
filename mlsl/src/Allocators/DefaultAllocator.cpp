@@ -8,6 +8,11 @@ namespace mlsl
 {
 	std::expected<void *MLSL_RESTRICT, Error> DefaultAllocator::Allocate(std::size_t size, std::size_t alignment)
 	{
+		if (alignment == 0)
+		{
+			return std::unexpected(Error {ErrorType::InvalidArgument});
+		}
+
 		if (size == 0)
 		{
 			return nullptr;

@@ -7,12 +7,15 @@
 #include <mlsl/Allocators/LinearArena.hpp>
 #include <mlsl/Allocators/PoolAllocator.hpp>
 #include <mlsl/Allocators/StackArena.hpp>
+#include <mlsl/Memory/Alignment.hpp>
 #include <mlsl/Memory/StaticBuffer.hpp>
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
+#include <limits>
 #include <utility>
 
 TEST_CASE("DefaultAllocator allocates and frees heap memory")
@@ -361,4 +364,96 @@ TEST_CASE("PoolAllocator move assignment transfers free list state")
 	target.Deallocate(*block, 16);
 
 	REQUIRE(target.Available() == target.BlockCount());
+}
+
+TEST_CASE("Alignment helpers treat zero alignment as a no-op instead of dividing by zero")
+{
+	REQUIRE(mlsl::AlignAddress(13, 0) == 13);
+	REQUIRE(mlsl::AlignSize(13, 0) == 13);
+	REQUIRE(mlsl::IsAligned(13, 0));
+
+	REQUIRE(mlsl::AlignAddress(13, 8) == 16);
+	REQUIRE(mlsl::AlignSize(13, 8) == 16);
+	REQUIRE(mlsl::IsAligned(16, 8));
+	REQUIRE(not mlsl::IsAligned(13, 8));
+}
+
+TEST_CASE("Allocators reject zero alignment uniformly")
+{
+	mlsl::StaticBuffer<128> storage;
+	mlsl::DefaultAllocator heap;
+	mlsl::LinearArena linear(storage.Data(), storage.Size());
+	mlsl::StackArena stack(storage.Data(), storage.Size());
+	mlsl::FreeListAllocator freeList(storage.Data(), storage.Size());
+	mlsl::PoolAllocator pool(storage.Data(), storage.Size(), 32);
+
+	auto heapResult = heap.Allocate(16, 0);
+	auto linearResult = linear.Allocate(16, 0);
+	auto stackResult = stack.Allocate(16, 0);
+	auto freeListResult = freeList.Allocate(16, 0);
+	auto poolResult = pool.Allocate(16, 0);
+
+	REQUIRE(not heapResult);
+	REQUIRE(heapResult.error().type == mlsl::ErrorType::InvalidArgument);
+	REQUIRE(not linearResult);
+	REQUIRE(linearResult.error().type == mlsl::ErrorType::InvalidArgument);
+	REQUIRE(not stackResult);
+	REQUIRE(stackResult.error().type == mlsl::ErrorType::InvalidArgument);
+	REQUIRE(not freeListResult);
+	REQUIRE(freeListResult.error().type == mlsl::ErrorType::InvalidArgument);
+	REQUIRE(not poolResult);
+	REQUIRE(poolResult.error().type == mlsl::ErrorType::InvalidArgument);
+}
+
+TEST_CASE("Arena allocators reject oversized requests without integer overflow")
+{
+	constexpr std::size_t huge = std::numeric_limits<std::size_t>::max() - 8;
+
+	mlsl::StaticBuffer<128> storage;
+	mlsl::LinearArena linear(storage.Data(), storage.Size());
+	mlsl::StackArena stack(storage.Data(), storage.Size());
+	mlsl::FreeListAllocator freeList(storage.Data(), storage.Size());
+
+	auto linearResult = linear.Allocate(huge);
+	auto stackResult = stack.Allocate(huge);
+	auto freeListResult = freeList.Allocate(huge);
+
+	REQUIRE(not linearResult);
+	REQUIRE(linearResult.error().type == mlsl::ErrorType::OutOfMemory);
+	REQUIRE(not stackResult);
+	REQUIRE(stackResult.error().type == mlsl::ErrorType::OutOfMemory);
+	REQUIRE(not freeListResult);
+	REQUIRE(freeListResult.error().type == mlsl::ErrorType::OutOfMemory);
+
+	REQUIRE(linear.Used() == 0);
+	REQUIRE(stack.Used() == 0);
+	REQUIRE(freeList.Used() == 0);
+}
+
+TEST_CASE("FreeListAllocator handles a buffer too small to hold a block")
+{
+	mlsl::StaticBuffer<8> storage;
+	mlsl::FreeListAllocator allocator(storage.Data(), storage.Size());
+
+	auto block = allocator.Allocate(4);
+
+	REQUIRE(not block);
+	REQUIRE(block.error().type == mlsl::ErrorType::OutOfMemory);
+
+	allocator.Reset();
+
+	auto afterReset = allocator.Allocate(4);
+
+	REQUIRE(not afterReset);
+}
+
+TEST_CASE("Arena allocators honor large alignment requests")
+{
+	mlsl::StaticBuffer<256> storage;
+	mlsl::LinearArena arena(storage.Data(), storage.Size());
+
+	auto block = arena.Allocate(8, 64);
+
+	REQUIRE(block);
+	REQUIRE(mlsl::IsAligned(reinterpret_cast<std::uintptr_t>(*block), 64));
 }

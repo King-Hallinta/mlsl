@@ -40,11 +40,16 @@ namespace mlsl
 
 	std::expected<void *MLSL_RESTRICT, Error> LinearArena::Allocate(std::size_t size, std::size_t alignment)
 	{
+		if (alignment == 0)
+		{
+			return std::unexpected(Error {ErrorType::InvalidArgument});
+		}
+
 		auto current = reinterpret_cast<std::uintptr_t>(m_Buffer) + m_Offset;
 		auto aligned = AlignAddress(current, alignment);
 		auto offset = aligned - reinterpret_cast<std::uintptr_t>(m_Buffer);
 
-		if (offset + size > m_Size)
+		if (offset > m_Size or size > m_Size - offset)
 		{
 			return std::unexpected(Error {ErrorType::OutOfMemory});
 		}

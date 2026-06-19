@@ -10,10 +10,14 @@
 namespace mlsl
 {
 	FreeListAllocator::FreeListAllocator(void *buffer, std::size_t size, SearchPolicy policy)
-		: m_Buffer(buffer), m_Size(size), m_Used(0), m_Policy(policy), m_FreeList(static_cast<Block *>(buffer))
+		: m_Buffer(buffer), m_Size(size), m_Used(0), m_Policy(policy), m_FreeList(nullptr)
 	{
-		m_FreeList->size = size;
-		m_FreeList->next = nullptr;
+		if (buffer != nullptr and size >= sizeof(Block))
+		{
+			m_FreeList = static_cast<Block *>(buffer);
+			m_FreeList->size = size;
+			m_FreeList->next = nullptr;
+		}
 	}
 
 	FreeListAllocator::FreeListAllocator(FreeListAllocator &&other) noexcept
@@ -46,7 +50,16 @@ namespace mlsl
 
 	std::expected<void *MLSL_RESTRICT, Error> FreeListAllocator::Allocate(std::size_t size, std::size_t alignment)
 	{
-		std::size_t totalSize = size + sizeof(Header);
+		if (alignment == 0)
+		{
+			return std::unexpected(Error {ErrorType::InvalidArgument});
+		}
+
+		if (size > m_Size)
+		{
+			return std::unexpected(Error {ErrorType::OutOfMemory});
+		}
+
 		Block *prev = nullptr;
 		Block *curr = m_FreeList;
 		Block *bestPrev = nullptr;
@@ -182,10 +195,18 @@ namespace mlsl
 
 	void FreeListAllocator::Reset()
 	{
-		m_FreeList = static_cast<Block *>(m_Buffer);
-		m_FreeList->size = m_Size;
-		m_FreeList->next = nullptr;
 		m_Used = 0;
+
+		if (m_Buffer != nullptr and m_Size >= sizeof(Block))
+		{
+			m_FreeList = static_cast<Block *>(m_Buffer);
+			m_FreeList->size = m_Size;
+			m_FreeList->next = nullptr;
+		}
+		else
+		{
+			m_FreeList = nullptr;
+		}
 	}
 
 	std::size_t FreeListAllocator::Used() const

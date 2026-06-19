@@ -11,6 +11,11 @@ namespace mlsl
 {
 	[[nodiscard]] constexpr std::uintptr_t AlignAddress(std::uintptr_t address, std::size_t alignment)
 	{
+		if (alignment == 0)
+		{
+			return address;
+		}
+
 		auto remainder = address % alignment;
 
 		if (remainder == 0)
@@ -23,6 +28,11 @@ namespace mlsl
 
 	[[nodiscard]] constexpr std::size_t AlignSize(std::size_t size, std::size_t alignment)
 	{
+		if (alignment == 0)
+		{
+			return size;
+		}
+
 		auto remainder = size % alignment;
 
 		if (remainder == 0)
@@ -35,6 +45,11 @@ namespace mlsl
 
 	[[nodiscard]] constexpr bool IsAligned(std::uintptr_t address, std::size_t alignment)
 	{
+		if (alignment == 0)
+		{
+			return true;
+		}
+
 		return address % alignment == 0;
 	}
 } // namespace mlsl
