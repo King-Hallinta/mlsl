@@ -27,19 +27,29 @@ values.Append(20);
 ## Requirements
 
 * C++23
-* Premake
+* CMake 3.25+
 * MSVC
 * Catch2 (optional, for tests)
 
 ## Building
 
-Generate project files:
+Configure with Visual Studio:
 
 ```bash
-premake5 vs2026
+cmake --preset vs2026
 ```
 
-Open the generated solution in Visual Studio and build the library.
+Build the debug configuration:
+
+```bash
+cmake --build --preset vs2026-debug
+```
+
+Configure without tests:
+
+```bash
+cmake --preset vs2026 -DMLSL_BUILD_TESTS=OFF
+```
 
 ## License
 

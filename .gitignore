@@ -12,3 +12,4 @@ Build/
 *.vcxproj
 *.vcxproj.filters
 *.vcxproj.user
+CMakeUserPresets.json
