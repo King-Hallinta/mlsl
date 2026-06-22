@@ -20,8 +20,8 @@ mlsl::StaticBuffer<1024> memory;
 mlsl::LinearArena arena(memory.Data(), memory.Size());
 
 mlsl::List<int> values(&arena);
-values.AddBack(10);
-values.AddBack(20);
+values.Append(10);
+values.Append(20);
 ```
 
 ## Requirements
