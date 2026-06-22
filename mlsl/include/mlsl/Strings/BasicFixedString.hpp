@@ -66,10 +66,18 @@ namespace mlsl
 		constexpr std::expected<void, Error> Append(ConstPointer data);
 		constexpr std::expected<void, Error> Append(ViewType view);
 		constexpr std::expected<void, Error> Append(CharT value);
+		constexpr std::expected<void, Error> Insert(SizeType offset, ConstPointer data);
+		constexpr std::expected<void, Error> Insert(SizeType offset, ViewType view);
+		constexpr std::expected<void, Error> Insert(SizeType offset, CharT value);
+		constexpr std::expected<void, Error> Erase(SizeType offset, SizeType count = Npos);
+		constexpr std::expected<void, Error> Replace(SizeType offset, SizeType count, ConstPointer data);
+		constexpr std::expected<void, Error> Replace(SizeType offset, SizeType count, ViewType view);
+		constexpr std::expected<void, Error> Replace(SizeType offset, SizeType count, CharT value);
 		constexpr void Remove();
 		constexpr std::expected<void, Error> Resize(SizeType size, CharT value = CharT {});
 
 		[[nodiscard]] constexpr ViewType View() const;
+		[[nodiscard]] constexpr std::expected<ViewType, Error> Slice(SizeType offset, SizeType count = Npos) const;
 		[[nodiscard]] constexpr std::expected<ViewType, Error> Substr(SizeType offset, SizeType count = Npos) const;
 		[[nodiscard]] constexpr bool Equals(ViewType other) const;
 		[[nodiscard]] constexpr int Compare(ViewType other) const;

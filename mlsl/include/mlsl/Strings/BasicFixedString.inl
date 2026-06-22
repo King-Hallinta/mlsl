@@ -232,6 +232,110 @@ namespace mlsl
 	}
 
 	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Insert(SizeType offset, ConstPointer data)
+	{
+		return Insert(offset, ViewType(data));
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Insert(SizeType offset, ViewType view)
+	{
+		return Replace(offset, 0, view);
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Insert(SizeType offset, CharT value)
+	{
+		return Replace(offset, 0, value);
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Erase(SizeType offset, SizeType count)
+	{
+		if (offset > m_Size)
+		{
+			return std::unexpected(Error {ErrorType::OutOfBounds});
+		}
+
+		SizeType eraseCount = count == Npos or count > m_Size - offset ? m_Size - offset : count;
+
+		for (SizeType i = offset + eraseCount; i < m_Size; ++i)
+		{
+			m_Data[i - eraseCount] = m_Data[i];
+		}
+
+		m_Size -= eraseCount;
+		WriteTerminator();
+
+		return {};
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Replace(SizeType offset, SizeType count, ConstPointer data)
+	{
+		return Replace(offset, count, ViewType(data));
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Replace(SizeType offset, SizeType count, ViewType view)
+	{
+		if (offset > m_Size)
+		{
+			return std::unexpected(Error {ErrorType::OutOfBounds});
+		}
+
+		SizeType replaceCount = count == Npos or count > m_Size - offset ? m_Size - offset : count;
+		SizeType newSize = m_Size - replaceCount + view.Size();
+
+		if (newSize > N)
+		{
+			return std::unexpected(Error {ErrorType::BufferOverflow});
+		}
+
+		CharT replacement[N + 1] {};
+
+		for (SizeType i = 0; i < view.Size(); ++i)
+		{
+			replacement[i] = view[i];
+		}
+
+		if (view.Size() > replaceCount)
+		{
+			SizeType growth = view.Size() - replaceCount;
+
+			for (SizeType i = m_Size; i > offset + replaceCount; --i)
+			{
+				m_Data[i + growth - 1] = m_Data[i - 1];
+			}
+		}
+		else if (replaceCount > view.Size())
+		{
+			SizeType shrink = replaceCount - view.Size();
+
+			for (SizeType i = offset + replaceCount; i < m_Size; ++i)
+			{
+				m_Data[i - shrink] = m_Data[i];
+			}
+		}
+
+		for (SizeType i = 0; i < view.Size(); ++i)
+		{
+			m_Data[offset + i] = replacement[i];
+		}
+
+		m_Size = newSize;
+		WriteTerminator();
+
+		return {};
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<void, Error> BasicFixedString<CharT, N>::Replace(SizeType offset, SizeType count, CharT value)
+	{
+		return Replace(offset, count, ViewType(&value, 1));
+	}
+
+	template <typename CharT, std::size_t N>
 	constexpr void BasicFixedString<CharT, N>::Remove()
 	{
 		if (m_Size == 0)
@@ -266,6 +370,12 @@ namespace mlsl
 	constexpr typename BasicFixedString<CharT, N>::ViewType BasicFixedString<CharT, N>::View() const
 	{
 		return ViewType(m_Data, m_Size);
+	}
+
+	template <typename CharT, std::size_t N>
+	constexpr std::expected<typename BasicFixedString<CharT, N>::ViewType, Error> BasicFixedString<CharT, N>::Slice(SizeType offset, SizeType count) const
+	{
+		return View().Slice(offset, count);
 	}
 
 	template <typename CharT, std::size_t N>

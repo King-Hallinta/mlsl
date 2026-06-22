@@ -69,6 +69,57 @@ TEST_CASE("FixedString supports access substr and mutation")
 	REQUIRE(string.Equals(mlsl::StringView("abczz")));
 }
 
+TEST_CASE("FixedString supports slice insert erase and replace")
+{
+	mlsl::FixedString<12> string("abcdef");
+
+	auto slice = string.Slice(2, 2);
+
+	REQUIRE(slice);
+	REQUIRE(slice->Equals(mlsl::StringView("cd")));
+	REQUIRE(string.Insert(3, "XY"));
+	REQUIRE(string.Equals(mlsl::StringView("abcXYdef")));
+	REQUIRE(string.Erase(2, 3));
+	REQUIRE(string.Equals(mlsl::StringView("abdef")));
+	REQUIRE(string.Replace(2, 2, "CD"));
+	REQUIRE(string.Equals(mlsl::StringView("abCDf")));
+	REQUIRE(string.Replace(5, 0, '!'));
+	REQUIRE(string.Equals(mlsl::StringView("abCDf!")));
+	REQUIRE(string.CString()[6] == '\0');
+}
+
+TEST_CASE("FixedString slice overflow preserves contents")
+{
+	mlsl::FixedString<6> string("abcd");
+
+	auto insert = string.Insert(2, "xyz");
+
+	REQUIRE(not insert);
+	REQUIRE(insert.error().type == mlsl::ErrorType::BufferOverflow);
+	REQUIRE(string.Equals(mlsl::StringView("abcd")));
+
+	auto replace = string.Replace(1, 1, "wxyz");
+
+	REQUIRE(not replace);
+	REQUIRE(replace.error().type == mlsl::ErrorType::BufferOverflow);
+	REQUIRE(string.Equals(mlsl::StringView("abcd")));
+	REQUIRE(string.CString()[4] == '\0');
+}
+
+TEST_CASE("FixedString slice mutation reports invalid offsets")
+{
+	mlsl::FixedString<8> string("abc");
+
+	auto erase = string.Erase(4, 1);
+	auto replace = string.Replace(4, 1, "x");
+
+	REQUIRE(not erase);
+	REQUIRE(erase.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(not replace);
+	REQUIRE(replace.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(string.Equals(mlsl::StringView("abc")));
+}
+
 TEST_CASE("FixedWString supports wide aliases")
 {
 	mlsl::FixedWString<8> string(L"ab");

@@ -60,6 +60,21 @@ TEST_CASE("StringView supports explicit size substr and compare")
 	REQUIRE(mlsl::StringView("abc") != mlsl::StringView("ab"));
 }
 
+TEST_CASE("StringView supports slice alias")
+{
+	mlsl::StringView view("abcdef");
+	auto slice = view.Slice(2, 3);
+	auto tail = view.Slice(4);
+	auto missing = view.Slice(7, 1);
+
+	REQUIRE(slice);
+	REQUIRE(slice->Equals(mlsl::StringView("cde")));
+	REQUIRE(tail);
+	REQUIRE(tail->Equals(mlsl::StringView("ef")));
+	REQUIRE(not missing);
+	REQUIRE(missing.error().type == mlsl::ErrorType::OutOfBounds);
+}
+
 TEST_CASE("WStringView exposes wide literals")
 {
 	mlsl::WStringView view(L"wide");

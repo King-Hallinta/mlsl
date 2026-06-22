@@ -46,6 +46,7 @@ namespace mlsl
 		[[nodiscard]] constexpr SizeType Size() const;
 		[[nodiscard]] constexpr bool Empty() const;
 
+		[[nodiscard]] constexpr std::expected<BasicStringView, Error> Slice(SizeType offset, SizeType count = Npos) const;
 		[[nodiscard]] constexpr std::expected<BasicStringView, Error> Substr(SizeType offset, SizeType count = Npos) const;
 		[[nodiscard]] constexpr bool Equals(BasicStringView other) const;
 		[[nodiscard]] constexpr int Compare(BasicStringView other) const;

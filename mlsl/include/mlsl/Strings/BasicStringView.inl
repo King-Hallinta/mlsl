@@ -94,6 +94,12 @@ namespace mlsl
 	}
 
 	template <typename CharT>
+	constexpr std::expected<BasicStringView<CharT>, Error> BasicStringView<CharT>::Slice(SizeType offset, SizeType count) const
+	{
+		return Substr(offset, count);
+	}
+
+	template <typename CharT>
 	constexpr std::expected<BasicStringView<CharT>, Error> BasicStringView<CharT>::Substr(SizeType offset, SizeType count) const
 	{
 		if (offset > m_Size)

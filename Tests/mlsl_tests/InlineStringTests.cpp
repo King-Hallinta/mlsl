@@ -79,6 +79,57 @@ TEST_CASE("InlineString supports copy move assign resize and substr")
 	REQUIRE(assigned.CString()[0] == '\0');
 }
 
+TEST_CASE("InlineString supports slice insert erase and replace")
+{
+	mlsl::InlineString<12> string("abcdef");
+
+	auto slice = string.Slice(1, 4);
+
+	REQUIRE(slice);
+	REQUIRE(slice->Equals(mlsl::StringView("bcde")));
+	REQUIRE(string.Insert(3, "XY"));
+	REQUIRE(string.Equals(mlsl::StringView("abcXYdef")));
+	REQUIRE(string.Erase(1, 3));
+	REQUIRE(string.Equals(mlsl::StringView("aYdef")));
+	REQUIRE(string.Replace(1, 1, "BCD"));
+	REQUIRE(string.Equals(mlsl::StringView("aBCDdef")));
+	REQUIRE(string.Replace(7, 0, '!'));
+	REQUIRE(string.Equals(mlsl::StringView("aBCDdef!")));
+	REQUIRE(string.CString()[8] == '\0');
+}
+
+TEST_CASE("InlineString can insert and replace with its own slice across growth")
+{
+	mlsl::InlineString<4> string("abcd");
+	auto middle = string.Slice(1, 2);
+
+	REQUIRE(middle);
+	REQUIRE(string.Insert(0, *middle));
+	REQUIRE(string.Capacity() > string.InlineCapacity());
+	REQUIRE(string.Equals(mlsl::StringView("bcabcd")));
+
+	auto tail = string.Slice(2, 4);
+
+	REQUIRE(tail);
+	REQUIRE(string.Replace(1, 2, *tail));
+	REQUIRE(string.Equals(mlsl::StringView("babcdbcd")));
+	REQUIRE(string.CString()[8] == '\0');
+}
+
+TEST_CASE("InlineString slice mutation reports invalid offsets")
+{
+	mlsl::InlineString<4> string("abc");
+
+	auto insert = string.Insert(5, "x");
+	auto erase = string.Erase(5, 1);
+
+	REQUIRE(not insert);
+	REQUIRE(insert.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(not erase);
+	REQUIRE(erase.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(string.Equals(mlsl::StringView("abc")));
+}
+
 TEST_CASE("InlineWString supports wide growth")
 {
 	mlsl::InlineWString<2> string(L"ab");

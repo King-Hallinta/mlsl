@@ -97,6 +97,59 @@ TEST_CASE("String preserves content across reserve copy move and substr")
 	REQUIRE(assigned == mlsl::StringView("alpha"));
 }
 
+TEST_CASE("String supports slice insert erase and replace")
+{
+	mlsl::String string("abcdef");
+
+	auto slice = string.Slice(1, 3);
+
+	REQUIRE(slice);
+	REQUIRE(slice->Equals(mlsl::StringView("bcd")));
+	REQUIRE(string.Insert(3, "XYZ"));
+	REQUIRE(string.Equals(mlsl::StringView("abcXYZdef")));
+	REQUIRE(string.Erase(2, 4));
+	REQUIRE(string.Equals(mlsl::StringView("abdef")));
+	REQUIRE(string.Replace(2, 0, "c"));
+	REQUIRE(string.Equals(mlsl::StringView("abcdef")));
+	REQUIRE(string.Replace(3, mlsl::String::Npos, '!'));
+	REQUIRE(string.Equals(mlsl::StringView("abc!")));
+	REQUIRE(string.CString()[4] == '\0');
+}
+
+TEST_CASE("String slice mutation reports invalid offsets")
+{
+	mlsl::String string("abc");
+
+	auto insert = string.Insert(4, "x");
+	auto erase = string.Erase(4, 1);
+	auto replace = string.Replace(4, 1, "x");
+
+	REQUIRE(not insert);
+	REQUIRE(insert.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(not erase);
+	REQUIRE(erase.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(not replace);
+	REQUIRE(replace.error().type == mlsl::ErrorType::OutOfBounds);
+	REQUIRE(string.Equals(mlsl::StringView("abc")));
+}
+
+TEST_CASE("String can insert and replace with its own slice")
+{
+	mlsl::String string("abcdef");
+	auto middle = string.Slice(1, 3);
+
+	REQUIRE(middle);
+	REQUIRE(string.Insert(0, *middle));
+	REQUIRE(string.Equals(mlsl::StringView("bcdabcdef")));
+
+	auto tail = string.Slice(3, 6);
+
+	REQUIRE(tail);
+	REQUIRE(string.Replace(3, 3, *tail));
+	REQUIRE(string.Equals(mlsl::StringView("bcdabcdefdef")));
+	REQUIRE(string.CString()[12] == '\0');
+}
+
 TEST_CASE("WString supports wide storage and comparison")
 {
 	mlsl::WString string(L"wide");

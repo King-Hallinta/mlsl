@@ -354,6 +354,144 @@ namespace mlsl
 	}
 
 	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Insert(SizeType offset, ConstPointer data)
+	{
+		return Insert(offset, ViewType(data));
+	}
+
+	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Insert(SizeType offset, ViewType view)
+	{
+		return Replace(offset, 0, view);
+	}
+
+	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Insert(SizeType offset, CharT value)
+	{
+		return Replace(offset, 0, value);
+	}
+
+	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Erase(SizeType offset, SizeType count)
+	{
+		if (offset > m_Size)
+		{
+			return std::unexpected(Error {ErrorType::OutOfBounds});
+		}
+
+		SizeType eraseCount = count == Npos or count > m_Size - offset ? m_Size - offset : count;
+
+		for (SizeType i = offset + eraseCount; i < m_Size; ++i)
+		{
+			m_Data[i - eraseCount] = m_Data[i];
+		}
+
+		m_Size -= eraseCount;
+		WriteTerminator();
+
+		return {};
+	}
+
+	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Replace(SizeType offset, SizeType count, ConstPointer data)
+	{
+		return Replace(offset, count, ViewType(data));
+	}
+
+	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Replace(SizeType offset, SizeType count, ViewType view)
+	{
+		if (offset > m_Size)
+		{
+			return std::unexpected(Error {ErrorType::OutOfBounds});
+		}
+
+		SizeType replaceCount = count == Npos or count > m_Size - offset ? m_Size - offset : count;
+		SizeType newSize = m_Size - replaceCount + view.Size();
+		ConstPointer replaceData = view.Data();
+		Pointer copiedData = nullptr;
+
+		if (replaceData != nullptr and view.Size() > 0)
+		{
+			auto dataStart = reinterpret_cast<std::uintptr_t>(m_Data);
+			auto dataEnd = dataStart + m_Size * sizeof(CharT);
+			auto replaceStart = reinterpret_cast<std::uintptr_t>(replaceData);
+			bool aliasesStorage = replaceStart >= dataStart and replaceStart < dataEnd;
+
+			if (aliasesStorage)
+			{
+				auto allocation = m_Allocator->Allocate(view.Size() * sizeof(CharT), alignof(CharT));
+
+				if (not allocation)
+				{
+					return std::unexpected(allocation.error());
+				}
+
+				copiedData = static_cast<Pointer>(*allocation);
+
+				for (SizeType i = 0; i < view.Size(); ++i)
+				{
+					copiedData[i] = replaceData[i];
+				}
+
+				replaceData = copiedData;
+			}
+		}
+
+		auto result = Reserve(newSize);
+
+		if (not result)
+		{
+			if (copiedData != nullptr)
+			{
+				m_Allocator->Deallocate(copiedData, view.Size() * sizeof(CharT));
+			}
+
+			return result;
+		}
+
+		if (view.Size() > replaceCount)
+		{
+			SizeType growth = view.Size() - replaceCount;
+
+			for (SizeType i = m_Size; i > offset + replaceCount; --i)
+			{
+				m_Data[i + growth - 1] = m_Data[i - 1];
+			}
+		}
+		else if (replaceCount > view.Size())
+		{
+			SizeType shrink = replaceCount - view.Size();
+
+			for (SizeType i = offset + replaceCount; i < m_Size; ++i)
+			{
+				m_Data[i - shrink] = m_Data[i];
+			}
+		}
+
+		for (SizeType i = 0; i < view.Size(); ++i)
+		{
+			m_Data[offset + i] = replaceData[i];
+		}
+
+		m_Size = newSize;
+		WriteTerminator();
+
+		if (copiedData != nullptr)
+		{
+			m_Allocator->Deallocate(copiedData, view.Size() * sizeof(CharT));
+		}
+
+		return {};
+	}
+
+	template <typename CharT>
+	std::expected<void, Error> BasicString<CharT>::Replace(SizeType offset, SizeType count, CharT value)
+	{
+		return Replace(offset, count, ViewType(&value, 1));
+	}
+
+	template <typename CharT>
 	void BasicString<CharT>::Remove()
 	{
 		if (m_Size == 0)
@@ -390,6 +528,12 @@ namespace mlsl
 	typename BasicString<CharT>::ViewType BasicString<CharT>::View() const
 	{
 		return ViewType(m_Data, m_Size);
+	}
+
+	template <typename CharT>
+	std::expected<typename BasicString<CharT>::ViewType, Error> BasicString<CharT>::Slice(SizeType offset, SizeType count) const
+	{
+		return View().Slice(offset, count);
 	}
 
 	template <typename CharT>
